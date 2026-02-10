@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 
 interface NoButtonProps {
@@ -9,14 +9,9 @@ interface NoButtonProps {
 }
 
 export default function NoButton({ onClick, clickCount }: NoButtonProps) {
-  // Start at center
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState<{ x: number; y: number } | null>(null);
+  const [isRandom, setIsRandom] = useState(false);
   const isDisabled = clickCount >= 3;
-
-  // Optional: adjust on mount to center exactly
-  useEffect(() => {
-    setPosition({ x: 0, y: 0 });
-  }, []);
 
   const moveRandomly = () => {
     const vw = window.innerWidth;
@@ -25,14 +20,14 @@ export default function NoButton({ onClick, clickCount }: NoButtonProps) {
     const buttonHeight = 50;
     const margin = 20;
 
-    // Limit random movement so button stays fully visible
-    const maxX = vw / 2 - buttonWidth / 2 - margin;
-    const maxY = vh / 2 - buttonHeight / 2 - margin;
+    const maxX = vw - buttonWidth - margin;
+    const maxY = vh - buttonHeight - margin;
 
-    const randomX = (Math.random() - 0.5) * 2 * maxX; // between -maxX and +maxX
-    const randomY = (Math.random() - 0.5) * 2 * maxY;
+    const randomX = Math.random() * maxX;
+    const randomY = Math.random() * maxY;
 
     setPosition({ x: randomX, y: randomY });
+    setIsRandom(true);
   };
 
   const handleClick = () => {
@@ -46,27 +41,26 @@ export default function NoButton({ onClick, clickCount }: NoButtonProps) {
   };
 
   return (
-    <motion.button
-      animate={{ x: position.x, y: position.y }}
+    <motion.div
+      animate={position ?? {}}
       transition={{ type: "spring", stiffness: 200, damping: 25 }}
       style={{
-        position: "fixed",
-        top: "50%",
-        left: "50%",
-        translateX: "-50%",
-        translateY: "-50%",
-        zIndex: 50,
+        position: isRandom ? "fixed" : "relative",
+        top: isRandom ? 0 : undefined,
+        left: isRandom ? 0 : undefined,
+        zIndex: isRandom ? 50 : undefined,
         willChange: "transform",
+        display: "inline-block",
+        cursor: isDisabled ? "not-allowed" : "pointer",
       }}
       whileHover={{ scale: isDisabled ? 1 : 1.05 }}
       whileTap={{ scale: isDisabled ? 1 : 0.95 }}
       onClick={handleClick}
-      disabled={isDisabled}
       className={`px-6 py-3 font-semibold rounded-xl shadow-md transition-all ${
-        isDisabled ? "bg-gray-400 text-gray-600 cursor-not-allowed" : "bg-gray-300 text-gray-700"
+        isDisabled ? "bg-gray-400 text-gray-600" : "bg-gray-300 text-gray-700"
       }`}
     >
       No 😿
-    </motion.button>
+    </motion.div>
   );
 }

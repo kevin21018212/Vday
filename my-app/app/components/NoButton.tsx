@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 interface NoButtonProps {
@@ -9,22 +9,28 @@ interface NoButtonProps {
 }
 
 export default function NoButton({ onClick, clickCount }: NoButtonProps) {
+  // Start at center
   const [position, setPosition] = useState({ x: 0, y: 0 });
-
   const isDisabled = clickCount >= 3;
 
+  // Optional: adjust on mount to center exactly
+  useEffect(() => {
+    setPosition({ x: 0, y: 0 });
+  }, []);
+
   const moveRandomly = () => {
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const buttonWidth = 150; // approximate button size
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const buttonWidth = 150;
     const buttonHeight = 50;
     const margin = 20;
 
-    const maxX = viewportWidth - buttonWidth - margin;
-    const maxY = viewportHeight - buttonHeight - margin;
+    // Limit random movement so button stays fully visible
+    const maxX = vw / 2 - buttonWidth / 2 - margin;
+    const maxY = vh / 2 - buttonHeight / 2 - margin;
 
-    const randomX = Math.random() * maxX;
-    const randomY = Math.random() * maxY;
+    const randomX = (Math.random() - 0.5) * 2 * maxX; // between -maxX and +maxX
+    const randomY = (Math.random() - 0.5) * 2 * maxY;
 
     setPosition({ x: randomX, y: randomY });
   };
@@ -42,13 +48,15 @@ export default function NoButton({ onClick, clickCount }: NoButtonProps) {
   return (
     <motion.button
       animate={{ x: position.x, y: position.y }}
-      transition={{ type: "spring", stiffness: 150, damping: 25 }}
+      transition={{ type: "spring", stiffness: 200, damping: 25 }}
       style={{
         position: "fixed",
-        top: 0,
-        left: 0,
+        top: "50%",
+        left: "50%",
+        translateX: "-50%",
+        translateY: "-50%",
         zIndex: 50,
-        willChange: "transform", // smoother on mobile
+        willChange: "transform",
       }}
       whileHover={{ scale: isDisabled ? 1 : 1.05 }}
       whileTap={{ scale: isDisabled ? 1 : 0.95 }}

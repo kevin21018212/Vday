@@ -10,40 +10,50 @@ interface NoButtonProps {
 
 export default function NoButton({ onClick, clickCount }: NoButtonProps) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isRandom, setIsRandom] = useState(false);
 
   const isDisabled = clickCount >= 3;
 
   const moveRandomly = () => {
-    const randomX = Math.random() * 260 - 130;
-    const randomY = Math.random() * 260 - 130;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const margin = 100;
 
-    setPosition({
-      x: randomX,
-      y: randomY,
-    });
+    const randomX = Math.random() * (viewportWidth - margin * 2) - (viewportWidth / 2 - margin);
+    const randomY = Math.random() * (viewportHeight - margin * 2) - (viewportHeight / 2 - margin);
+
+    setPosition({ x: randomX, y: randomY });
+    setIsRandom(true);
   };
 
   const handleClick = () => {
     if (isDisabled) return;
 
-    // Always trigger parent logic (to show popup)
-    onClick();
-
-    if (clickCount === 1) {
-      // SECOND CLICK → move button
+    if (clickCount === 0 || clickCount === 2) {
+      // FIRST and THIRD click → show popup
+      onClick();
+    } else if (clickCount === 1) {
+      // SECOND click → move button randomly
       moveRandomly();
-    }
-
-    if (clickCount === 2) {
-      // THIRD CLICK → reset position
-      setPosition({ x: 0, y: 0 });
     }
   };
 
   return (
     <motion.button
-      animate={{ x: position.x, y: position.y }}
-      transition={{ type: "spring", stiffness: 110 }}
+      animate={position}
+      transition={{ type: "spring", damping: 20, duration: 0.2 }}
+      style={
+        isRandom
+          ? {
+              position: "fixed",
+              left: "50%",
+              top: "50%",
+              translateX: "-50%",
+              translateY: "-50%",
+              zIndex: 50,
+            }
+          : {}
+      }
       whileHover={{ scale: isDisabled ? 1 : 1.1 }}
       whileTap={{ scale: isDisabled ? 1 : 0.9 }}
       onClick={handleClick}

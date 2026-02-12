@@ -1,59 +1,59 @@
 "use client";
 
 import { useState } from "react";
+
 import ConfettiOverlay from "./components/ConfettiOverlay";
-import NoButton from "./components/NoButton";
-import PopupManager from "./components/PopupManager";
-import YesButton from "./components/YesButton";
+import CatZoom from "./components/CatZoom";
 import CatRain from "./components/CatRain";
+import CatParade from "./components/CatParade";
+import CatExplosion from "./components/CatExplosion";
+
+import CatButtons from "./components/CatButtons";
 
 export default function Home() {
-  const [noClickCount, setNoClickCount] = useState(0);
-  const [popup, setPopup] = useState<"none" | "tryAgain" | "success">("none");
-
   const [confettiId, setConfettiId] = useState(0);
-  const [showCats, setShowCats] = useState(false);
+  const [zoom, setZoom] = useState(false);
+  const [rain, setRain] = useState(false);
+  const [parade, setParade] = useState(false);
+  const [explosion, setExplosion] = useState(false);
 
-  const handleYesClick = () => {
-    setPopup("success");
-
-    // trigger confetti
+  const startCelebration = () => {
     setConfettiId(Date.now());
-
-    // start the cats!
-    setShowCats(true);
-  };
-
-  const handleNoClick = () => {
-    setNoClickCount((prev) => prev + 1);
-    setPopup("tryAgain");
-  };
-
-  const closePopup = () => {
-    setPopup("none");
+    setZoom(true);
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-pink-100 p-4 relative overflow-hidden">
-      {/* Floating cats appear here when showCats is true */}
-      <CatRain active={showCats} />
+      {/* Fun cat effects */}
+      <CatZoom active={zoom} onComplete={() => setZoom(false)} />
+      <CatRain active={rain} />
+      <CatParade
+        active={parade}
+        onComplete={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
+      <CatExplosion active={explosion} onComplete={() => setExplosion(false)} />
 
       <main className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl text-center border-2 border-pink-200">
-        <h1 className="text-3xl font-bold text-pink-600 mb-6">💖 Will you be my Valentine? 💖</h1>
+        <h1 className="text-4xl font-bold text-pink-600 mb-4">💘 Happy Valentine's Day! 💘</h1>
 
-        <p className="text-pink-500 mb-8">(Choose carefully...)</p>
+        <p className="text-pink-500 mb-6">Meow Meow Meow Meow</p>
 
-        <div className="flex justify-center gap-6">
-          <YesButton onClick={handleYesClick} />
-
-          <NoButton onClick={handleNoClick} clickCount={noClickCount} />
-        </div>
-
-        <PopupManager type={popup} onClose={closePopup} />
+        <CatButtons
+          onZoom={() => setZoom(true)}
+          onRain={() => setRain(!rain)}
+          onParade={() => setParade(!parade)}
+          onExplosion={() => setExplosion(true)}
+          zoomActive={zoom}
+          rainActive={rain}
+          paradeActive={parade}
+          explosionActive={explosion}
+        />
 
         <ConfettiOverlay triggerId={confettiId} />
 
-        <p className="mt-6 text-sm text-pink-400">No clicks so far: {noClickCount}</p>
+        <p className="mt-6 text-sm text-pink-400">Meow Meow Meow Meow Meow</p>
       </main>
     </div>
   );

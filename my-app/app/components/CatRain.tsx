@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { catImages } from "./catImages";
 
 interface CatRainProps {
   active: boolean;
@@ -9,16 +10,6 @@ interface CatRainProps {
 export default function CatRain({ active }: CatRainProps) {
   if (!active) return null;
 
-  const catImages = [
-    "/cats/cat1.jpg",
-    "/cats/cat2.jpeg",
-    "/cats/cat3.png",
-    "/cats/cat4.jpg",
-    "/cats/cat5.jpg",
-    "/cats/cat6.jpeg",
-  ];
-
-  // Spawn more cats for a fuller rain
   const cats = Array.from({ length: 50 });
 
   return (
@@ -26,17 +17,10 @@ export default function CatRain({ active }: CatRainProps) {
       {cats.map((_, i) => {
         const image = catImages[i % catImages.length];
 
-        // Random horizontal start across full width
         const startX = Math.random() * 100;
-
-        // Random animation duration and delay for natural spacing
         const duration = 5 + Math.random() * 5;
         const delay = Math.random() * 4;
-
-        // Random size for variation
-        const size = 40 + Math.random() * 40; // 40px → 80px
-
-        // Random horizontal drift
+        const size = 80 + Math.random() * 60;
         const drift = Math.random() * 200 - 100;
 
         return (

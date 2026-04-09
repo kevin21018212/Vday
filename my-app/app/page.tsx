@@ -36,7 +36,7 @@ export default function Home() {
       <CatExplosion active={explosion} onComplete={() => setExplosion(false)} />
 
       <main className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl text-center border-2 border-pink-200">
-        <h1 className="text-4xl font-bold text-pink-600 mb-4">💘 Happy Valentine's Day! 💘</h1>
+        <h1 className="text-4xl font-bold text-pink-600 mb-4">💘 Wow my Gf is so Amazing and Perfect 💘</h1>
 
         <p className="text-pink-500 mb-6">Meow Meow Meow Meow</p>
 

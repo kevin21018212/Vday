@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Transition } from "framer-motion";
 import { catImages } from "./catImages";
 import { useEffect } from "react";
 
@@ -57,13 +57,7 @@ export default function CatExplosion({ active, onComplete }: CatExplosionProps) 
 
         // Individual cat variants
         const catVariants = {
-          hidden: {
-            x: 0,
-            y: 0,
-            scale: 0,
-            rotate: 0,
-            opacity: 0,
-          },
+          hidden: { x: 0, y: 0, scale: 0, rotate: 0, opacity: 0 },
           explode: {
             x: endX,
             y: endY,
@@ -74,22 +68,11 @@ export default function CatExplosion({ active, onComplete }: CatExplosionProps) 
               type: "spring",
               stiffness: 60,
               damping: 10,
-            },
+            } as Transition,
           },
         };
 
-        return (
-          <motion.img
-            key={i}
-            src={image}
-            className="absolute object-contain"
-            style={{
-              width: "140px",
-              height: "140px",
-            }}
-            variants={catVariants}
-          />
-        );
+        return <motion.img key={i} src={image} className="absolute object-contain" variants={catVariants} />;
       })}
     </motion.div>
   );
